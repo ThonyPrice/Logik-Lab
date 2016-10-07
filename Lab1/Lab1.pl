@@ -16,3 +16,16 @@ orel(x,y,u,v,w) ∨e x,y–u,v–w  lem lem
 impint(x,y) →i x–y
 
 */
+
+% Importerar en fil och skickar prmisser, mål och bevis.
+verify(InputFileName) :-  see(InputFileName),
+                          read(Prems), read(Goal), read(Proof),
+                          seen,
+                          valid_proof(Prems, Goal, Proof).
+                          
+% Main function                          
+valid_proof(Prems, Goal, Proof) :-
+      % Verifiera att målet finns i bevisets sista rad.
+      length(Proof, Last),
+      nth1(Last, Proof, Goal1),
+      Goal = Goal1.
