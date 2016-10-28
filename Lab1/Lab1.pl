@@ -18,28 +18,58 @@ impint(x,y) →i x–y
 */
 
 % Importerar en fil och skickar prmisser, mål och bevis.
+/*
 match([_,X,premise]):-
   member(X,Prems).
 
 match([_,_,assumption]):-
-  
+  nl.
+
 
 match([_,_,copy(X)]):-
-  asd
+  asd.
 
 match([_,_,andel1(X)]):-
+  nl.
 
 match([_,_,andel2(X)]):-
+  nl.
 
 match([_,_,orint1(X)]):-
+  nl.
 
 match([_,_,orint2(X)]):-
+  nl.
 
 match([_,_,orel(X,Y,U,V,W)]):-
+  nl.
 
 match([_,_,impint(X,Y)]):-
+  nl.
+*/
+match([_,_,Rule], CopyOfRows):-
+                    sub_string(Rule,0,5,_,"impel"),
+                    sub_string(Rule,6,_,1,X),
+                    split_string(X,",","",L),
+                    nth0(0,L,A),
+                    atom_number(A,A1),
+                    nth0(1,L,B),
+                    atom_number(B,B1),
+                    findRow(CopyOfRows, [A1,Q,_]),
+                    findRow(CopyOfRows, [B1,Imp,_]),
+                    with_output_to(atom(I),write(Imp)),
+                    sub_string(I,0,3,_,"imp"),
+                    sub_string(I,4,_,1,Y),
+                    split_string(Y,",","",L1),
+                    atom_string(Q,Q1),
+                    nth0(0,L1,Q1),!.
 
-match([_,_,impel(X,Y)]):-
+
+
+findRow([],[]).
+findRow([H|T],[A1,Q,_]):-
+  H = [A1,Q,_];
+  findRow(T,[A1,Q,_]).
 
 
 
@@ -62,13 +92,13 @@ gtRows([H|T]):-
   not(number(H1)),!,
   gtRows(H),
   gtRows(T);
-  write(H),
+  match(H),
+  %write(H),
   nl,
-  [Rownr|_] = H,
-  [_, Text|_] = H,
-  [_,_,Funk|_] = H,
-  Funk(Text),
-
+  %[Rownr|_] = H,
+  %[_, Text|_] = H,
+  %[_,_,Funk|_] = H,
+  %Funk(Text),
   gtRows(T).
 
 %rows2([]).
@@ -82,12 +112,9 @@ gtRows([H|T]):-
 %  nl,
 %  gtRows(T).
 
-match([_,_,f1]):-
 
 
-match()
 
-match()
 
 
 
