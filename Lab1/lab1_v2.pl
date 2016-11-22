@@ -2,7 +2,7 @@
 
 /*
 Project:            Lab1 - Logic in computer science
-Authors:            Thony Price 
+Authors:            Thony Price
                     Wlliam Skagerström
 Last revision:      2016-11-19
 */
@@ -11,24 +11,24 @@ Last revision:      2016-11-19
 % ~~~ * ~~~ * ~~~ * Main predicate ~~~ * ~~~ * ~~~ * %
 
 
-% First predicate of program. Reads a file and saves data to 
+% First predicate of program. Reads a file and saves data to
 % variables Prems, Goal and Proof.
-verify(InputFileName) :-  
+verify(InputFileName) :-
                           see(InputFileName),
                           read(Prems), read(Goal), read(Proof),
                           seen,
                           valid_ending(_, Goal, Proof),
                           valid_proof(Prems, Proof, Proof, []), !.
                           /*  valid_proof must send Prems and two
-                              copies of proof. One to extract the 
+                              copies of proof. One to extract the
                               row we're checking and one to try and
-                              bind rows we're looking for. The idea 
-                              is to let valid_proof bind all rows in 
+                              bind rows we're looking for. The idea
+                              is to let valid_proof bind all rows in
                               proof and each time a row's true "move"
                               it to the empty list. When all items are
                               moved to the other list - proof is valid. */
 
-                          
+
 % ~~~ * ~~~ * ~~~ * Special cases ~~~ * ~~~ * ~~~ * %
 
 
@@ -39,7 +39,7 @@ valid_ending(_, Goal, Proof) :-
                           LastRow = [_,Value,_],
                           Value = Goal.
 
-% Find row and try to bind a row with given number 
+% Find row and try to bind a row with given number
 findRow(_, [], _) :- fail.
 findRow(Nr, [[Nr, Value, _] | _], Value).
 findRow(Nr, [_ | Tail], Row) :- findRow(Nr, Tail, Row).
@@ -55,19 +55,19 @@ find_last_row([_ | Tail], H) :-
 % Get box in which a row exists
 find_box(_, [], _) :- fail.
 find_box([Nr, Value, _], [[[Nr, Value, _] | BoxTail] | _], [[Nr, Value, _] | BoxTail]).
-find_box([Nr, Value, _], [ _ | Tail], Box) :- 
+find_box([Nr, Value, _], [ _ | Tail], Box) :-
                           find_box([Nr, Value, _], Tail, Box).
 
 % Iterate through premises to find a premise
 valid_premise([], _) :- fail.
 valid_premise(Value, [Value | _]).
-valid_premise(Value, [_ | Tail]) :- 
+valid_premise(Value, [_ | Tail]) :-
                           valid_premise(Value, Tail).
 
 
 % ~~~ * ~~~ * ~~~ * The "proof predicates" ~~~ * ~~~ * ~~~ * %
 
-                        
+
 % Case: All rows is valid
 % If this base case i reached, all rows in Proof is valid.
 valid_proof(_,_,[],_) :- !.
@@ -79,12 +79,12 @@ valid_proof(Prems, ProofCopy,[[[Row, Value, assumption] | Boxtail ] | RestRows],
                           valid_proof(Prems, ProofCopy, Boxtail, [[Row, Value, assumption] | Done]),
                           valid_proof(Prems, ProofCopy, RestRows, [[[Row, Value, assumption] | Boxtail ] | Done]).
 
-% Case: Premise                          
-% Verifies that a premise in proof exists in the given premises (Prems).                     
+% Case: Premise
+% Verifies that a premise in proof exists in the given premises (Prems).
 valid_proof(Prems, ProofCopy, [[Row, Value, premise] | RestRows], Done) :-
                           valid_premise(Value, Prems), !,
                           valid_proof(Prems, ProofCopy, RestRows, [[Row, Value, premise] | Done]).
-                          
+
 % Case: Implication elimination
 valid_proof(Prems, ProofCopy, [[Row, Value, impel(R1,R2)] | RestRows], Done) :-
                           % Note we're looking for the row in already proccesed rows
@@ -108,6 +108,11 @@ valid_proof(Prems, ProofCopy, [[Row, X, copy(Some_row)] | RestRows], Done) :-
 
 % Case: And introduction
 % Explonation
+valid_proof(Prems, ProofCopy, [[Row, and(A,B), andint(X,Y)] | RestRows], Done) :-
+                        findRow(X,Done,A),
+                        findRow(Y,Done,B),
+                        valid_proof(Prems,ProofCopy,RestRows,[[Row, and(A,B), andint(X,Y)] | Done]).
+
 
 % Case: And deletion 1
 % Explonation
