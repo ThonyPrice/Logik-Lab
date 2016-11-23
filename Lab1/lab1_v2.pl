@@ -185,7 +185,14 @@ valid_proof(Prems, ProofCopy, [[Row, Value, negnegint(X)] | RestRows], Done) :-
 
 % Case: LEM
 % Explonation
-
+valid_proof(Prems, ProofCopy, [[Row, or(A, B), lem] | RestRows], Done) :-
+                          A = neg(B), 
+                          valid_proof(Prems,ProofCopy,RestRows,[[Row, or(A, B), lem] | Done]).
+                          
+valid_proof(Prems, ProofCopy, [[Row, or(A, B), lem] | RestRows], Done) :-
+                          B = neg(A), 
+                          valid_proof(Prems,ProofCopy,RestRows,[[Row, or(A, B), lem] | Done]).
+                          
 
 % ~~~ * ~~~ * ~~~ * Rules to apply ~~~ * ~~~ * ~~~ * %
 
