@@ -146,7 +146,7 @@ valid_proof(Prems, ProofCopy, [[Row, Value, orel(R1, R2, R4, R3, R5)] | RestRows
                           find_first_row(Box1, [R2, C, _]),
                           find_last_row(Box1, [R4, Value, _]),
                           find_first_row(Box2, [R3, D, _]),
-                          find_last_row(Box2, [R5, Value, _]),                          
+                          find_last_row(Box2, [R5, Value, _]),
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, Value, orel(R1, R2, R4, R3, R5)] | Done]).
 
 % Case: Negation introduction
@@ -174,7 +174,7 @@ valid_proof(Prems, ProofCopy, [[Row, Value, contel(X)] | RestRows], Done) :-
 % Explonation
 valid_proof(Prems, ProofCopy, [[Row, neg(neg(Value)), negnegint(X)] | RestRows], Done) :-
                           findRow(X, Done, SomeValue),
-                          SomeValue = neg(Value),
+                          SomeValue = Value,
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, neg(neg(Value)), negnegint(X)] | Done]).
 
 % Case: Double negation elimination
