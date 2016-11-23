@@ -157,14 +157,14 @@ valid_proof(Prems, ProofCopy, [[Row, neg(A), negint(X,Y)] | RestRows], Done) :-
 % Case: Negation elimination
 % Explonation
 valid_proof(Prems, ProofCopy, [[Row, cont, negel(X,Y)] | RestRows], Done) :-
-                          find_row(X, Done, A),
-                          find_row(Y, Done, neg(A)),
+                          findRow(X, Done, A),
+                          findRow(Y, Done, neg(A)),
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, cont, negel(X,Y)] | Done]).
 
 % Case: Contradiction elimination
 % Explonation
 valid_proof(Prems, ProofCopy, [[Row, Value, contel(X)] | RestRows], Done) :-
-                          find_row(X, Done, cont),
+                          findRow(X, Done, cont),
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, Value, contel(X)] | Done]).
 
 % Case: Double negation introduction
