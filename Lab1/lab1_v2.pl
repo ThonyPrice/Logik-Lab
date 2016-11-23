@@ -172,6 +172,9 @@ valid_proof(Prems, ProofCopy, [[Row, Value, contel(X)] | RestRows], Done) :-
 
 % Case: Double negation elimination
 % Explonation
+valid_proof(Prems, ProofCopy, [[Row, Value, negnegel(X)] | RestRows], Done) :-
+                          find_row(X, Done, neg(neg(Value))),
+                          valid_proof(Prems, ProofCopy, RestRows,[[Row,Value,negnegel(X)] | Done]).
 
 % Case: Modus tollens
 % Explonation
