@@ -190,6 +190,9 @@ valid_proof(Prems, ProofCopy, [[Row, neg(Value), mt(X,Y)] | RestRows], Done) :-
 % Case: PBC
 % Explonation
 
+
+
+
 % Case: LEM
 % Explonation
 valid_proof(Prems, ProofCopy, [[Row, or(A, B), lem] | RestRows], Done) :-
