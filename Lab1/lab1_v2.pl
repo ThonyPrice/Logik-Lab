@@ -139,8 +139,8 @@ valid_proof(Prems, ProofCopy, [[Row, or(A,B), orint1(X)] | RestRows], Done) :-
 
 % Case: Or introduction 2
 % Explonation
-valid_proof(Prems, ProofCopy, [[Row, or(A,B), orint1(X)] | RestRows], Done) :-
-                          findRow(X,Done,A),
+valid_proof(Prems, ProofCopy, [[Row, or(A,B), orint2(X)] | RestRows], Done) :-
+                          findRow(X,Done,B),
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, or(A,B), orint2(X)] | Done]).
 
 % Case: Or elimination
