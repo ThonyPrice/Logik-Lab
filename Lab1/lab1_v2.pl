@@ -99,8 +99,6 @@ valid_proof(Prems, ProofCopy, [[Row, Value, impel(R1,R2)] | RestRows], Done) :-
                           findRow(R2, Done, imp(A, Value)),
                           valid_proof(Prems, ProofCopy, RestRows, [[Row, Value, impel(R1,R2)] | Done]).
 
-
-
 % Case: Copy
 % Make sure that in done-rows we've got the row number which we're copying from
 % and it has the same value as the row we're copying to
@@ -115,15 +113,11 @@ valid_proof(Prems, ProofCopy, [[Row, and(A,B), andint(X,Y)] | RestRows], Done) :
                           findRow(Y,Done,B),
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, and(A,B), andint(X,Y)] | Done]).
 
-
 % Case: And deletion 1
 % Explonation
 valid_proof(Prems, ProofCopy, [[Row, A, andel1(X)] | RestRows], Done) :-
                           findRow(X,Done,and(A,_)),
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, A, andel1(X)] | Done]).
-
-
-
 
 % Case: And deletion 2
 % Explonation
@@ -192,12 +186,17 @@ valid_proof(Prems, ProofCopy, [[Row, Value, negnegel(X)] | RestRows], Done) :-
 % Case: Modus tollens
 % Explonation
 valid_proof(Prems, ProofCopy, [[Row, neg(Value), mt(X,Y)] | RestRows], Done) :-
-                            findRow(X,Done, imp(Value, InvalidValue)),
-                            findRow(Y,Done, neg(InvalidValue)),
-                            valid_proof(Prems, ProofCopy, RestRows, [[Row, neg(Value), mt(X,Y)] | Done]).
+                          findRow(X,Done, imp(Value, InvalidValue)),
+                          findRow(Y,Done, neg(InvalidValue)),
+                          valid_proof(Prems, ProofCopy, RestRows, [[Row, neg(Value), mt(X,Y)] | Done]).
 
 % Case: PBC
 % Explonation
+valid_proof(Prems, ProofCopy, [[Row, Value, pbc(X,Y)] | RestRows], Done) :-
+                          find_box([X, neg(Value), _], Done, Box),
+                          find_first_row(Box, [X, neg(Value), _]),
+                          find_last_row(Box, [Y, cont, _]),
+                          valid_proof(Prems, ProofCopy, RestRows, [[Row, Value, pbc(X,Y)] | Done]).
 
 
 
