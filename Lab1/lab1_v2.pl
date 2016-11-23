@@ -85,6 +85,13 @@ valid_proof(Prems, ProofCopy, [[Row, Value, premise] | RestRows], Done) :-
                           valid_premise(Value, Prems), !,
                           valid_proof(Prems, ProofCopy, RestRows, [[Row, Value, premise] | Done]).
 
+% Case: Implication introduction
+valid_proof(Prems, ProofCopy, [[Row, imp(A,B), impint(X,Y)] | RestRows], Done) :-
+                          find_box([X, A, _], Done, Box),
+                          find_first_row(Box, [X, A, _]),
+                          find_last_row(Box, [Y, B, _]),
+                          valid_proof(Prems, ProofCopy, RestRows, [[Row, imp(A,B), impint(X,Y)] | Done]).
+
 % Case: Implication elimination
 valid_proof(Prems, ProofCopy, [[Row, Value, impel(R1,R2)] | RestRows], Done) :-
                           % Note we're looking for the row in already proccesed rows
@@ -92,12 +99,7 @@ valid_proof(Prems, ProofCopy, [[Row, Value, impel(R1,R2)] | RestRows], Done) :-
                           findRow(R2, Done, imp(A, Value)),
                           valid_proof(Prems, ProofCopy, RestRows, [[Row, Value, impel(R1,R2)] | Done]).
 
-% Case: Implication introduction
-valid_proof(Prems, ProofCopy, [[Row, imp(A,B), impint(X,Y)] | RestRows], Done) :-
-                          find_box([X, A, _], Done, Box),
-                          find_first_row(Box, [X, A, _]),
-                          find_last_row(Box, [Y, B, _]),
-                          valid_proof(Prems, ProofCopy, RestRows, [[Row, imp(A,B), impint(X,Y)] | Done]).
+
 
 % Case: Copy
 % Make sure that in done-rows we've got the row number which we're copying from
@@ -116,9 +118,18 @@ valid_proof(Prems, ProofCopy, [[Row, and(A,B), andint(X,Y)] | RestRows], Done) :
 
 % Case: And deletion 1
 % Explonation
+valid_proof(Prems, ProofCopy, [[Row, A, andel1(X)] | RestRows], Done) :-
+                        findRow(X,Done,and(A,_)),
+                        valid_proof(Prems,ProofCopy,RestRows,[[Row, A, andel1(X)] | Done]).
+
+
+
 
 % Case: And deletion 2
 % Explonation
+valid_proof(Prems, ProofCopy, [[Row, B, andel2(X)] | RestRows], Done) :-
+                        findRow(X,Done,and(_,B)),
+                        valid_proof(Prems,ProofCopy,RestRows,[[Row, B, andel2(X)] | Done]).
 
 % Case: Or introduction 1
 % Explonation
