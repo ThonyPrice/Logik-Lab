@@ -145,6 +145,15 @@ valid_proof(Prems, ProofCopy, [[Row, or(A,B), orint2(X)] | RestRows], Done) :-
 
 % Case: Or elimination
 % Explonation
+valid_proof(Prems, ProofCopy, [[Row, Value, orel(R1, R2, R4, R3, R5)] | RestRows], Done) :-
+                          findRow(R1, Done, or(C, D)),
+                          find_box([R2, C, _], Done, Box1),
+                          find_box([R3, D, _], Done, Box2),
+                          find_first_row(Box1, [R2, C, _]),
+                          find_last_row(Box1, [R4, Value, _]),
+                          find_first_row(Box2, [R3, D, _]),
+                          find_last_row(Box2, [R5, Value, _]),                          
+                          valid_proof(Prems,ProofCopy,RestRows,[[Row, Value, orel(R1, R2, R4, R3, R5)] | Done]).
 
 % Case: Negation introduction
 % Explonation
