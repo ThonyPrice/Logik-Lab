@@ -191,6 +191,10 @@ valid_proof(Prems, ProofCopy, [[Row, Value, negnegel(X)] | RestRows], Done) :-
 
 % Case: Modus tollens
 % Explonation
+valid_proof(Prems, ProofCopy, [[Row, neg(Value), mt(X,Y)] | RestRows], Done) :-
+                            findRow(X,Done, imp(Value, InvalidValue)),
+                            findRow(Y,Done, neg(InvalidValue)),
+                            valid_proof(Prems, ProofCopy, RestRows, [[Row, neg(Value), mt(X,Y)] | Done]).
 
 % Case: PBC
 % Explonation
@@ -198,13 +202,13 @@ valid_proof(Prems, ProofCopy, [[Row, Value, negnegel(X)] | RestRows], Done) :-
 % Case: LEM
 % Explonation
 valid_proof(Prems, ProofCopy, [[Row, or(A, B), lem] | RestRows], Done) :-
-                          A = neg(B), 
+                          A = neg(B),
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, or(A, B), lem] | Done]).
-                          
+
 valid_proof(Prems, ProofCopy, [[Row, or(A, B), lem] | RestRows], Done) :-
-                          B = neg(A), 
+                          B = neg(A),
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, or(A, B), lem] | Done]).
-                          
+
 
 % ~~~ * ~~~ * ~~~ * Rules to apply ~~~ * ~~~ * ~~~ * %
 
