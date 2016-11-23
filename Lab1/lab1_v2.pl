@@ -44,6 +44,9 @@ findRow(_, [], _) :- fail.
 findRow(Nr, [[Nr, Value, _] | _], Value).
 findRow(Nr, [_ | Tail], Row) :- findRow(Nr, Tail, Row).
 
+find_copy_Row([Nr, Value, Arg], [[Nr, Value, Arg] | _]).
+find_copy_Row([Nr, Value, Arg], [_ | Tail]) :- find_copy_Row([Nr, Value, Arg], Tail).
+
 % Find first row in a box
 find_first_row([H | _], H).
 
@@ -104,7 +107,8 @@ valid_proof(Prems, ProofCopy, [[Row, Value, impel(R1,R2)] | RestRows], Done) :-
 % and it has the same value as the row we're copying to
 valid_proof(Prems, ProofCopy, [[Row, X, copy(Some_row)] | RestRows], Done) :-
                           find_box([Row, X, copy(Some_row)], Done, Box),
-                          findRow(Some_row,[Some_row, X, _], Box),
+                          findRow(Some_row,[Some_row, X, _], Box);
+                          find_copy_Row([Some_row, X, premise], Done),
                           valid_proof(Prems, ProofCopy, RestRows, [[Row, X, copy(Some_row)] | Done]).
 
 % Case: And introduction
