@@ -122,9 +122,15 @@ valid_proof(Prems, ProofCopy, [[Row, and(A,B), andint(X,Y)] | RestRows], Done) :
 
 % Case: Or introduction 1
 % Explonation
+valid_proof(Prems, ProofCopy, [[Row, or(A,B), orint1(X)] | RestRows], Done) :-
+                          findRow(X,Done,A),
+                          valid_proof(Prems,ProofCopy,RestRows,[[Row, and(A,B), andint(X,Y)] | Done]).
 
 % Case: Or introduction 2
 % Explonation
+valid_proof(Prems, ProofCopy, [[Row, or(A,B), orint1(X)] | RestRows], Done) :-
+                          findRow(X,Done,A),
+                          valid_proof(Prems,ProofCopy,RestRows,[[Row, and(A,B), andint(X,Y)] | Done]).
 
 % Case: Or elimination
 % Explonation
