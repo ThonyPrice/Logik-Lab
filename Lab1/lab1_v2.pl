@@ -124,22 +124,31 @@ valid_proof(Prems, ProofCopy, [[Row, and(A,B), andint(X,Y)] | RestRows], Done) :
 % Explonation
 valid_proof(Prems, ProofCopy, [[Row, or(A,B), orint1(X)] | RestRows], Done) :-
                           findRow(X,Done,A),
-                          valid_proof(Prems,ProofCopy,RestRows,[[Row, and(A,B), andint(X,Y)] | Done]).
+                          valid_proof(Prems,ProofCopy,RestRows,[[Row, or(A,B), orint1(X)] | Done]).
 
 % Case: Or introduction 2
 % Explonation
 valid_proof(Prems, ProofCopy, [[Row, or(A,B), orint1(X)] | RestRows], Done) :-
                           findRow(X,Done,A),
-                          valid_proof(Prems,ProofCopy,RestRows,[[Row, and(A,B), andint(X,Y)] | Done]).
+                          valid_proof(Prems,ProofCopy,RestRows,[[Row, or(A,B), orint2(X)] | Done]).
 
 % Case: Or elimination
 % Explonation
 
 % Case: Negation introduction
 % Explonation
+valid_proof(Prems, ProofCopy, [[Row, neg(A), negint(X,Y)] | RestRows], Done) :-
+                          find_box([X, A, _], Done, Box),
+                          find_first_row(Box, [X, A, _]),
+                          find_last_row(Box, [Y, cont, _]),
+                          valid_proof(Prems,ProofCopy,RestRows,[[Row, neg(A), andint(X,Y)] | Done]).
 
 % Case: Negation elimination
 % Explonation
+valid_proof(Prems, ProofCopy, [[Row, cont, negel(X,Y)] | RestRows], Done) :-
+                          find_row(X, Done, A),
+                          find_row(Y, Done, neg(A)),
+                          valid_proof(Prems,ProofCopy,RestRows,[[Row, neg(A), andint(X,Y)] | Done]).
 
 % Case: Contradiction elimination
 % Explonation
