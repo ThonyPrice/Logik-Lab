@@ -103,7 +103,8 @@ valid_proof(Prems, ProofCopy, [[Row, Value, impel(R1,R2)] | RestRows], Done) :-
 % Make sure that in done-rows we've got the row number which we're copying from
 % and it has the same value as the row we're copying to
 valid_proof(Prems, ProofCopy, [[Row, X, copy(Some_row)] | RestRows], Done) :-
-                          findRow(Some_row,[Some_row, X, _], Done),
+                          find_box([Row, X, copy(Some_row)], Done, Box),
+                          findRow(Some_row,[Some_row, X, _], Box),
                           valid_proof(Prems, ProofCopy, RestRows, [[Row, X, copy(Some_row)] | Done]).
 
 % Case: And introduction
