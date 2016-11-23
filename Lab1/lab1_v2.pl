@@ -111,16 +111,16 @@ valid_proof(Prems, ProofCopy, [[Row, X, copy(Some_row)] | RestRows], Done) :-
 % Case: And introduction
 % Explonation
 valid_proof(Prems, ProofCopy, [[Row, and(A,B), andint(X,Y)] | RestRows], Done) :-
-                        findRow(X,Done,A),
-                        findRow(Y,Done,B),
-                        valid_proof(Prems,ProofCopy,RestRows,[[Row, and(A,B), andint(X,Y)] | Done]).
+                          findRow(X,Done,A),
+                          findRow(Y,Done,B),
+                          valid_proof(Prems,ProofCopy,RestRows,[[Row, and(A,B), andint(X,Y)] | Done]).
 
 
 % Case: And deletion 1
 % Explonation
 valid_proof(Prems, ProofCopy, [[Row, A, andel1(X)] | RestRows], Done) :-
-                        findRow(X,Done,and(A,_)),
-                        valid_proof(Prems,ProofCopy,RestRows,[[Row, A, andel1(X)] | Done]).
+                          findRow(X,Done,and(A,_)),
+                          valid_proof(Prems,ProofCopy,RestRows,[[Row, A, andel1(X)] | Done]).
 
 
 
@@ -128,8 +128,8 @@ valid_proof(Prems, ProofCopy, [[Row, A, andel1(X)] | RestRows], Done) :-
 % Case: And deletion 2
 % Explonation
 valid_proof(Prems, ProofCopy, [[Row, B, andel2(X)] | RestRows], Done) :-
-                        findRow(X,Done,and(_,B)),
-                        valid_proof(Prems,ProofCopy,RestRows,[[Row, B, andel2(X)] | Done]).
+                          findRow(X,Done,and(_,B)),
+                          valid_proof(Prems,ProofCopy,RestRows,[[Row, B, andel2(X)] | Done]).
 
 % Case: Or introduction 1
 % Explonation
@@ -157,18 +157,22 @@ valid_proof(Prems, ProofCopy, [[Row, neg(A), negint(X,Y)] | RestRows], Done) :-
 % Case: Negation elimination
 % Explonation
 valid_proof(Prems, ProofCopy, [[Row, cont, negel(X,Y)] | RestRows], Done) :-
-                          find_row(X, Done, A),
-                          find_row(Y, Done, neg(A)),
+                          findRow(X, Done, A),
+                          findRow(Y, Done, neg(A)),
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, cont, negel(X,Y)] | Done]).
 
 % Case: Contradiction elimination
 % Explonation
 valid_proof(Prems, ProofCopy, [[Row, Value, contel(X)] | RestRows], Done) :-
-                          find_row(X, Done, cont),
+                          findRow(X, Done, cont),
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, Value, contel(X)] | Done]).
 
 % Case: Double negation introduction
 % Explonation
+valid_proof(Prems, ProofCopy, [[Row, Value, negnegint(X)] | RestRows], Done) :-
+                          findRow(X, Done, SomeValue),
+                          neg(neg(SomeValue) = Value, 
+                          valid_proof(Prems,ProofCopy,RestRows,[[Row, Value, negnegint(X)] | Done]).
 
 % Case: Double negation elimination
 % Explonation
