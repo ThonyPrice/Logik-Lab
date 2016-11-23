@@ -169,15 +169,15 @@ valid_proof(Prems, ProofCopy, [[Row, Value, contel(X)] | RestRows], Done) :-
 
 % Case: Double negation introduction
 % Explonation
-valid_proof(Prems, ProofCopy, [[Row, Value, negnegint(X)] | RestRows], Done) :-
+valid_proof(Prems, ProofCopy, [[Row, neg(neg(Value)), negnegint(X)] | RestRows], Done) :-
                           findRow(X, Done, SomeValue),
-                          neg(neg(SomeValue) = Value, 
-                          valid_proof(Prems,ProofCopy,RestRows,[[Row, Value, negnegint(X)] | Done]).
+                          SomeValue = neg(Value),
+                          valid_proof(Prems,ProofCopy,RestRows,[[Row, neg(neg(Value)), negnegint(X)] | Done]).
 
 % Case: Double negation elimination
 % Explonation
 valid_proof(Prems, ProofCopy, [[Row, Value, negnegel(X)] | RestRows], Done) :-
-                          find_row(X, Done, neg(neg(Value))),
+                          findRow(X, Done, neg(neg(Value))),
                           valid_proof(Prems, ProofCopy, RestRows,[[Row,Value,negnegel(X)] | Done]).
 
 % Case: Modus tollens
