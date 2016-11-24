@@ -90,6 +90,8 @@ valid_proof(Prems, ProofCopy, [[Row, Value, premise] | RestRows], Done) :-
                           valid_proof(Prems, ProofCopy, RestRows, [[Row, Value, premise] | Done]).
 
 % Case: Implication introduction
+% To introduce an impication the rule must refer to a row which is first 
+% in a box where the last row in the box's the variable we're introducing implication for
 valid_proof(Prems, ProofCopy, [[Row, imp(A,B), impint(X,Y)] | RestRows], Done) :-
                           find_box([X, A, _], Done, Box),
                           find_first_row(Box, [X, A, _]),
@@ -97,8 +99,9 @@ valid_proof(Prems, ProofCopy, [[Row, imp(A,B), impint(X,Y)] | RestRows], Done) :
                           valid_proof(Prems, ProofCopy, RestRows, [[Row, imp(A,B), impint(X,Y)] | Done]).
 
 % Case: Implication elimination
+% The value in ths row must exist in an previously used row as an implicated value.
+% The value implicating the mentionen one should be apointed by the other row in rule.
 valid_proof(Prems, ProofCopy, [[Row, Value, impel(R1,R2)] | RestRows], Done) :-
-                          % Note we're looking for the row in already proccesed rows
                           findRow(R1, Done, A),
                           findRow(R2, Done, imp(A, Value)),
                           valid_proof(Prems, ProofCopy, RestRows, [[Row, Value, impel(R1,R2)] | Done]).
@@ -144,7 +147,9 @@ valid_proof(Prems, ProofCopy, [[Row, or(A,B), orint2(X)] | RestRows], Done) :-
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, or(A,B), orint2(X)] | Done]).
 
 % Case: Or elimination
-% Explonation
+% Check that there exists a row with an or containing two values. Both of these
+% must also be present as first lines in two separate boxes and both of those 
+% boxes should end with the value given on the row using orel
 valid_proof(Prems, ProofCopy, [[Row, Value, orel(R1, R2, R4, R3, R5)] | RestRows], Done) :-
                           findRow(R1, Done, or(C, D)),
                           find_box([R2, C, _], Done, Box1),
@@ -190,7 +195,7 @@ valid_proof(Prems, ProofCopy, [[Row, Value, negnegel(X)] | RestRows], Done) :-
                           valid_proof(Prems, ProofCopy, RestRows,[[Row,Value,negnegel(X)] | Done]).
 
 % Case: Modus tollens
-% Explonation; Checks if row X has an implication(A->B), and that there is a neg(B) on row Y.
+% Checks if row X has an implication(A->B), and that there is a neg(B) on row Y.
 valid_proof(Prems, ProofCopy, [[Row, neg(Value), mt(X,Y)] | RestRows], Done) :-
                           findRow(X,Done, imp(Value, InvalidValue)),
                           findRow(Y,Done, neg(InvalidValue)),
