@@ -6,7 +6,7 @@ p
       [
           [3, neg(p),     assumption],
           [4, neg(q),     imp(3,2)],
-          [5, p,          mt(4,1)],
+          [5, p,          mt(4,2)],
           [6, cont,       negel(3,5)]
       ],
   [7, p               pbc(3,6)]
