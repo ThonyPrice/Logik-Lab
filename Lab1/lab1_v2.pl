@@ -45,7 +45,8 @@ findRow(Nr, [[Nr, Value, _] | _], Value).
 findRow(Nr, [_ | Tail], Row) :- findRow(Nr, Tail, Row).
 
 find_copy_Row([Nr, Value, Arg], [[Nr, Value, Arg] | _]).
-find_copy_Row([Nr, Value, Arg], [_ | Tail]) :- find_copy_Row([Nr, Value, Arg], Tail).
+find_copy_Row([Nr, Value, Arg], [_ | Tail]) :-
+                      find_copy_Row([Nr, Value, Arg], Tail).
 
 % Find first row in a box
 find_first_row([H | _], H).
@@ -112,32 +113,32 @@ valid_proof(Prems, ProofCopy, [[Row, X, copy(Some_row)] | RestRows], Done) :-
                           valid_proof(Prems, ProofCopy, RestRows, [[Row, X, copy(Some_row)] | Done]).
 
 % Case: And introduction
-% Explonation
+% Make sure that the value on the rows we are and-ing have the correct values.
 valid_proof(Prems, ProofCopy, [[Row, and(A,B), andint(X,Y)] | RestRows], Done) :-
                           findRow(X,Done,A),
                           findRow(Y,Done,B),
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, and(A,B), andint(X,Y)] | Done]).
 
 % Case: And deletion 1
-% Explonation
+% Checks if A in the and is the same one that is presented.
 valid_proof(Prems, ProofCopy, [[Row, A, andel1(X)] | RestRows], Done) :-
                           findRow(X,Done,and(A,_)),
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, A, andel1(X)] | Done]).
 
 % Case: And deletion 2
-% Explonation
+% Checks if B in the and is the same one that is presented.
 valid_proof(Prems, ProofCopy, [[Row, B, andel2(X)] | RestRows], Done) :-
                           findRow(X,Done,and(_,B)),
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, B, andel2(X)] | Done]).
 
 % Case: Or introduction 1
-% Explonation
+% Checks if A is on row X.
 valid_proof(Prems, ProofCopy, [[Row, or(A,B), orint1(X)] | RestRows], Done) :-
                           findRow(X,Done,A),
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, or(A,B), orint1(X)] | Done]).
 
 % Case: Or introduction 2
-% Explonation
+% Checks if B is on row X.
 valid_proof(Prems, ProofCopy, [[Row, or(A,B), orint2(X)] | RestRows], Done) :-
                           findRow(X,Done,B),
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, or(A,B), orint2(X)] | Done]).
@@ -155,7 +156,7 @@ valid_proof(Prems, ProofCopy, [[Row, Value, orel(R1, R2, R4, R3, R5)] | RestRows
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, Value, orel(R1, R2, R4, R3, R5)] | Done]).
 
 % Case: Negation introduction
-% Explonation
+% Checks if there is a box in which begins with A, and ens with a contradiction.
 valid_proof(Prems, ProofCopy, [[Row, neg(A), negint(X,Y)] | RestRows], Done) :-
                           find_box([X, A, _], Done, Box),
                           find_first_row(Box, [X, A, _]),
@@ -163,40 +164,40 @@ valid_proof(Prems, ProofCopy, [[Row, neg(A), negint(X,Y)] | RestRows], Done) :-
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, neg(A), andint(X,Y)] | Done]).
 
 % Case: Negation elimination
-% Explonation
+% Checks if there is A and neg(A), which is a requirement for a contradiction.
 valid_proof(Prems, ProofCopy, [[Row, cont, negel(X,Y)] | RestRows], Done) :-
                           findRow(X, Done, A),
                           findRow(Y, Done, neg(A)),
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, cont, negel(X,Y)] | Done]).
 
 % Case: Contradiction elimination
-% Explonation
+% Checks to make sure that there is a contradiction on the specified row.
 valid_proof(Prems, ProofCopy, [[Row, Value, contel(X)] | RestRows], Done) :-
                           findRow(X, Done, cont),
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, Value, contel(X)] | Done]).
 
 % Case: Double negation introduction
-% Explonation
+% Makes sure that the value on X is in fact already a neg(Value), then doublenegates it.
 valid_proof(Prems, ProofCopy, [[Row, neg(neg(Value)), negnegint(X)] | RestRows], Done) :-
                           findRow(X, Done, SomeValue),
                           SomeValue = Value,
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, neg(neg(Value)), negnegint(X)] | Done]).
 
 % Case: Double negation elimination
-% Explonation
+% Checks if the row contains a doubleneg(Value).
 valid_proof(Prems, ProofCopy, [[Row, Value, negnegel(X)] | RestRows], Done) :-
                           findRow(X, Done, neg(neg(Value))),
                           valid_proof(Prems, ProofCopy, RestRows,[[Row,Value,negnegel(X)] | Done]).
 
 % Case: Modus tollens
-% Explonation
+% Explonation; Checks if row X has an implication(A->B), and that there is a neg(B) on row Y.
 valid_proof(Prems, ProofCopy, [[Row, neg(Value), mt(X,Y)] | RestRows], Done) :-
                           findRow(X,Done, imp(Value, InvalidValue)),
                           findRow(Y,Done, neg(InvalidValue)),
                           valid_proof(Prems, ProofCopy, RestRows, [[Row, neg(Value), mt(X,Y)] | Done]).
 
 % Case: PBC
-% Explonation
+% Checks for a box which begins with a neg(Value) and ends with a contradiction, thus resulting in just value.
 valid_proof(Prems, ProofCopy, [[Row, Value, pbc(X,Y)] | RestRows], Done) :-
                           find_box([X, neg(Value), _], Done, Box),
                           find_first_row(Box, [X, neg(Value), _]),
@@ -207,7 +208,7 @@ valid_proof(Prems, ProofCopy, [[Row, Value, pbc(X,Y)] | RestRows], Done) :-
 
 
 % Case: LEM
-% Explonation
+% A or B has to be the neg() countpart of the other.
 valid_proof(Prems, ProofCopy, [[Row, or(A, B), lem] | RestRows], Done) :-
                           A = neg(B),
                           valid_proof(Prems,ProofCopy,RestRows,[[Row, or(A, B), lem] | Done]).
