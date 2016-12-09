@@ -32,7 +32,7 @@ verify(Input) :-
 
 % And ✓
 % Or  ✓
-% AX
+% AX  ✓
 % EX
 % AG
 % EG
@@ -54,6 +54,9 @@ check(Transitions, Labels, State, [], or(_, F)) :-
 
 % Ax  ->  "Along all paths". First get all paths from
 %         current state. Then evaluate all paths.
+check(Transitions, Labels, State, [], ax(F)) :-
+      allPaths(Transitions, State, Paths),
+      evalAll(Transitions, Labels, Paths, U, F).
 
 % Ex  ->  "There exists a path". First get all paths from
 %         current state. Then check if one if the paths 
@@ -67,4 +70,15 @@ check(Transitions, Labels, State, [], or(_, F)) :-
 
 % Af  ->  "For All Future state".
 
-% ~~~ * Check predicates * ~~~ %
+% ~~~ * Help predicates * ~~~ %
+
+% Iterates through all transitions and binds the adjacent states 
+% to the variable "Paths".
+allPaths([[State|Paths]|_], State, Paths) :- !.
+allPaths([_|T], State, Paths) :- allPaths(T, State, Paths).
+
+% Iterate through all states in list and check each one
+evalAll(_,_,[],_,_).
+evalAll(Transitions, Labels, [State|States], U, F) :-
+      check(Transitions, Labels, State, U, F), !,
+      evalAll(Transitions, Labels, States, U, F).
