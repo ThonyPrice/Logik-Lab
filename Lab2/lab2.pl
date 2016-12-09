@@ -26,14 +26,45 @@ verify(Input) :-
 %             U
 
 % Literals
-%check(_, L, S, [], X)      :- ...
-%check(_, L, S, [], neg(X)) :- ...
-% And
-%check(T, L, S, [], and(F,G)) :- ...
-% Or
+% check(_, L, S, [], X)      :- ...
+% check(_, L, S, [], neg(X)) :- ...
+% check(T, L, S, [], and(F,G)) :- ...
+
+% And ✓
+% Or  ✓
 % AX
 % EX
 % AG
 % EG
 % EF
 % AF
+
+% ~~~ * Check predicates * ~~~ %
+
+% And ->  Evaluate both expressions.
+check(Transitions, Labels, State, [], and(F1, F2)) :-
+      check(Transitions, Labels, State, [], F1),
+      check(Transitions, Labels, State, [], F2).
+      
+% Or  ->  Either of the expressions evaluates True, try both w cuts
+check(Transitions, Labels, State, [], or(F, _)) :-
+      check(Transitions, Labels, State, [], F), !.
+check(Transitions, Labels, State, [], or(_, F)) :-
+      check(Transitions, Labels, State, [], F), !.
+
+% Ax  ->  "Along all paths". First get all paths from
+%         current state. Then evaluate all paths.
+
+% Ex  ->  "There exists a path". First get all paths from
+%         current state. Then check if one if the paths 
+%         evaluates as True using member. 
+
+% Ag  ->  "All future states (Globally)".
+
+% Eg  ->  "Exists Globally" (?).
+
+% Ef  ->  "Exists some Future state".
+
+% Af  ->  "For All Future state".
+
+% ~~~ * Check predicates * ~~~ %
