@@ -34,8 +34,8 @@ verify(Input) :-
 % Or  ✓
 % AX  ✓
 % EX  ✓
-% AG
-% EG
+% AG  ✓
+% EG  ✓
 % EF
 % AF
 
@@ -74,7 +74,7 @@ check(_, _, State, U, _) :-
 check(Transitions, Labels, State, U, ex(F)) :-
       check(Transitions, Labels, State, [], F),
       check(Transitions, Labels, State, [State|U], ax(ag(F))).
-      
+
 % Eg  ->  "Exists Globally" (?).
 check(_, _, State, U, _) :-
       member(State, U), !.
@@ -85,7 +85,15 @@ check(Transitions, Labels, State, U, eg(F)) :-
       check(Transitions, Labels, State, [State|U], eg(F)).
 
 % Ef  ->  "Exists some Future state".
-
+check(Transitions, Labels, State, U, ef(F)) :-
+      not(member(State, U)),
+      check(Transitions, Labels, State, [], F).
+check(Transitions, Labels, State, U, ef(F)) :-
+      not(member(State, U)),
+      allPaths(Transitions, State, Paths),
+      member(S1, Paths),
+      check(Transitions, Labels, S1, [State|U], ef(F)).
+      
 % Af  ->  "For All Future state".
 
 % ~~~ * Help predicates * ~~~ %
