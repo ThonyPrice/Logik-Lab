@@ -45,7 +45,7 @@ verify(Input) :-
 check(Transitions, Labels, State, [], and(F1, F2)) :-
       check(Transitions, Labels, State, [], F1),
       check(Transitions, Labels, State, [], F2).
-      
+
 % Or  ->  Either of the expressions evaluates True, try both w cuts
 check(Transitions, Labels, State, [], or(F, _)) :-
       check(Transitions, Labels, State, [], F), !.
@@ -59,11 +59,11 @@ check(Transitions, Labels, State, [], ax(F)) :-
       evalAll(Transitions, Labels, Paths, U, F).
 
 % Ex  ->  "There exists a path". First get all paths from
-%         current state. Then check if one if the paths 
-%         evaluates as True using member. 
+%         current state. Then check if one if the paths
+%         evaluates as True using member.
 check(Transitions, Labels, State, U, ex(F)) :-
       allPaths(Transitions, State, Paths),
-      member(X, Paths)
+      member(X, Paths),
       evalAll(Transitions, Labels, X, U, F).
 
 % Ag  ->  "Along all paths, (Globally)". We need to check along all
@@ -74,7 +74,6 @@ check(_, _, State, U, _) :-
 check(Transitions, Labels, State, U, ex(F)) :-
       % check(Transitions, Labels, State, U, F)
       % check(Transitions, Labels, State, [U|State], F)
-      
 % Eg  ->  "Exists Globally" (?).
 
 % Ef  ->  "Exists some Future state".
@@ -83,7 +82,7 @@ check(Transitions, Labels, State, U, ex(F)) :-
 
 % ~~~ * Help predicates * ~~~ %
 
-% Iterates through all transitions and binds the adjacent states 
+% Iterates through all transitions and binds the adjacent states
 % to the variable "Paths".
 allPaths([[State|Paths]|_], State, Paths) :- !.
 allPaths([_|T], State, Paths) :- allPaths(T, State, Paths).
