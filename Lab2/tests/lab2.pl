@@ -64,7 +64,7 @@ check(Transitions, Labels, State, U, ax(F)) :-
 check(Transitions, Labels, State, U, ex(F)) :-
       allPaths(Transitions, State, Paths),
       member(X, Paths),
-      evalAll(Transitions, Labels, X, U, F).
+      check(Transitions, Labels, X, U, F).
 
 % Ag  ->  "Along all paths, (Globally)". We need to check along all
 %         the path for every possible path. In case of cycles we've
@@ -107,11 +107,16 @@ check(_, Labels, State, [], neg(F)) :-
       allPaths(Labels, State, Paths),
       not(member(F, Paths)).
 
+% arbitrary formula
+check(_, Labels, State, [], F) :-
+      allPaths(Labels, State, Paths),
+      member(F, Paths).
+
 % ~~~ * Help predicates * ~~~ %
 
 % Iterates through all transitions and binds the adjacent states
 % to the variable "Paths".
-allPaths([[State|Paths]|_], State, Paths) :- !.
+allPaths([[State, Paths]|_], State, Paths) :- !.
 allPaths([_|T], State, Paths) :- allPaths(T, State, Paths).
 
 % Iterate through all states in list and check each one
