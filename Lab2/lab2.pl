@@ -33,7 +33,7 @@ verify(Input) :-
 % And ✓
 % Or  ✓
 % AX  ✓
-% EX
+% EX  ✓
 % AG
 % EG
 % EF
@@ -66,7 +66,10 @@ check(Transitions, Labels, State, U, ex(F)) :-
       member(X, Paths)
       evalAll(Transitions, Labels, X, U, F).
 
-% Ag  ->  "All future states (Globally)".
+% Ag  ->  "Along all paths, (Globally)". We need to check along all
+%         the path for every possible path. In case of cycles we've
+%         to keep track of states we've visited
+
 
 % Eg  ->  "Exists Globally" (?).
 
