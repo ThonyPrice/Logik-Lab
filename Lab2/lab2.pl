@@ -78,6 +78,8 @@ check(Transitions, Labels, State, U, ex(F)) :-
 
 % Eg  ->  "Exists Globally" (?).
 
+
+
 % Ef  ->  "Exists some Future state".
 
 % Af  ->  "For All Future state".
