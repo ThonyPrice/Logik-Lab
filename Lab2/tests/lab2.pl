@@ -69,22 +69,20 @@ check(Transitions, Labels, State, U, ex(F)) :-
 % Ag  ->  "Along all paths, (Globally)". We need to check along all
 %         the path for every possible path. In case of cycles we've
 %         to keep track of states we've visited
-check(_, _, State, U, _) :-
-      member(State, U), !.
-check(Transitions, Labels, State, U, ex(F)) :-
+check(_, _, State, U, ag(_)) :-
+      member(State, U).
+check(Transitions, Labels, State, U, ag(F)) :-
       check(Transitions, Labels, State, [], F),
       check(Transitions, Labels, State, [State|U], ax(ag(F))).
 
 % Eg  ->  "Exists Globally" (?).
-check(_, _, State, U, _) :-
+check(_, _, State, U, eg(_)) :-
       member(State, U), !.
 check(Transitions, Labels, State, U, eg(F)) :-
       check(Transitions, Labels, State, [], F),
       allPaths(Transitions, State, Paths),
       member(X, Paths),
       check(Transitions, Labels, X, [State|U], eg(F)).
-
-
 
 % Ef  ->  "Exists some Future state".
 check(Transitions, Labels, State, U, ef(F)) :-
