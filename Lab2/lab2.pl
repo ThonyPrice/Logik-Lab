@@ -70,7 +70,7 @@ check(Transitions, Labels, State, U, ex(F)) :-
 %         the path for every possible path. In case of cycles we've
 %         to keep track of states we've visited
 check(_, _, State, U, _) :-
-      member(State, U), fail.
+      member(State, U), !.
 check(Transitions, Labels, State, U, ex(F)) :-
       check(Transitions, Labels, State, [], F),
       check(Transitions, Labels, State, [U|State], ax(ag(F)))
