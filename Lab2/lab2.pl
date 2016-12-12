@@ -72,8 +72,8 @@ check(Transitions, Labels, State, U, ex(F)) :-
 check(_, _, State, U, _) :-
       member(State, U), fail.
 check(Transitions, Labels, State, U, ex(F)) :-
-      % check(Transitions, Labels, State, U, F)
-      % check(Transitions, Labels, State, [U|State], F)
+      check(Transitions, Labels, State, [], F),
+      check(Transitions, Labels, State, [U|State], ax(ag(F)))
       
 % Eg  ->  "Exists Globally" (?).
 
