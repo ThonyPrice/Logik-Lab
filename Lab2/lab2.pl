@@ -69,8 +69,12 @@ check(Transitions, Labels, State, U, ex(F)) :-
 % Ag  ->  "Along all paths, (Globally)". We need to check along all
 %         the path for every possible path. In case of cycles we've
 %         to keep track of states we've visited
-
-
+check(_, _, State, U, _) :-
+      member(State, U), fail.
+check(Transitions, Labels, State, U, ex(F)) :-
+      % check(Transitions, Labels, State, U, F)
+      % check(Transitions, Labels, State, [U|State], F)
+      
 % Eg  ->  "Exists Globally" (?).
 
 % Ef  ->  "Exists some Future state".
