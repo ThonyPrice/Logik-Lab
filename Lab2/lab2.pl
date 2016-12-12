@@ -36,8 +36,8 @@ verify(Input) :-
 % EX  ✓
 % AG  ✓
 % EG  ✓
-% EF
-% AF
+% EF  ✓
+% AF  ✓
 
 % ~~~ * Check predicates * ~~~ %
 
@@ -97,6 +97,17 @@ check(Transitions, Labels, State, U, ef(F)) :-
       check(Transitions, Labels, S1, [State|U], ef(F)).
       
 % Af  ->  "For All Future state".
+check(Transitions, Labels, State, U, af(F)) :-
+      not(member(State, U)),
+      check(Transitions, Labels, State, [], F).
+check(Transitions, Labels, State, U, af(F)) :-
+      not(member(State, U)),
+      check(Transitions, Labels, State, [State|U], ax(af(F))).
+
+% Neg ->  "Explonation..."
+check(Transitions, Labels, State, U, neg(F)) :-
+      allPaths(Labels, State, Paths),
+      not(member(F, Paths)).
 
 % ~~~ * Help predicates * ~~~ %
 
