@@ -61,6 +61,10 @@ check(Transitions, Labels, State, [], ax(F)) :-
 % Ex  ->  "There exists a path". First get all paths from
 %         current state. Then check if one if the paths 
 %         evaluates as True using member. 
+check(Transitions, Labels, State, U, ex(F)) :-
+      allPaths(Transitions, State, Paths),
+      member(X, Paths)
+      evalAll(Transitions, Labels, X, U, F).
 
 % Ag  ->  "All future states (Globally)".
 
