@@ -73,9 +73,16 @@ check(_, _, State, U, _) :-
       member(State, U), !.
 check(Transitions, Labels, State, U, ex(F)) :-
       check(Transitions, Labels, State, [], F),
-      check(Transitions, Labels, State, [U|State], ax(ag(F)))
+      check(Transitions, Labels, State, [State|U], ax(ag(F))).
       
 % Eg  ->  "Exists Globally" (?).
+check(_, _, State, U, _) :-
+      member(State, U), !.
+check(Transitions, Labels, State, U, eg(F)) :-
+      check(Transitions, Labels, State, [], F),
+      allPaths(Transitions, State, Paths),
+      member(X, Paths),
+      check(Transitions, Labels, State, [State|U], eg(F)).
 
 % Ef  ->  "Exists some Future state".
 
