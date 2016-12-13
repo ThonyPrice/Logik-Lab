@@ -75,7 +75,7 @@ check(Transitions, Labels, State, Used, ag(F)) :-
 %         using member evaluate each until we find one that holds.
 %         If we encounter a state we already been at eg evals as True.
 check(_, _, State, Used, eg(_)) :-
-          member(State, U), !.
+          member(State, Used), !.
 check(Transitions, Labels, State, Used, eg(F)) :-
           check(Transitions, Labels, State, [], F),
           allPaths(Transitions, State, Paths),
@@ -104,6 +104,13 @@ check(Transitions, Labels, State, Used, ef(F)) :-
 
 % ~~~ * Help predicates * ~~~ %
 
+% This makes sure that the atom, F, is present in the state. 
+% Calling allPaths w Labels returns all variables in the state. 
+% Make sure F's one of them
+check(_, Labels, State, [], F) :-
+          allPaths(Labels, State, Paths),
+          member(F, Paths).
+
 % Iterates through all transitions and binds the adjacent states
 % to the variable "Paths".
 allPaths([[State, Paths]|_], State, Paths) :- !.
@@ -115,9 +122,4 @@ evalAll(Transitions, Labels, [State|States], U, F) :-
           check(Transitions, Labels, State, U, F), !,
           evalAll(Transitions, Labels, States, U, F).
           
-% This makes sure that the atom, F, is present in the state. 
-% Calling allPaths w Labels returns all variables in the state. 
-% Make sure F's one of them
-check(_, Labels, State, [], F) :-
-          allPaths(Labels, State, Paths),
-          member(F, Paths).
+          
